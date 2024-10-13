@@ -1,0 +1,35 @@
+services:
+  nginx:
+    build: ./requirements/nginx
+    ports:
+      - 443:443
+    volumes:
+      - ./demo:/var/www/html
+    container_name: nginx
+    networks:
+      - my_custom_network
+    depends_on:
+      - wordpress
+    restart: always
+  wordpress:
+    build: ./requirements/wordpress
+    volumes:
+      - ./demo:/var/www/html
+    env_file:
+      - .env
+    container_name: wordpress
+    networks:
+      - my_custom_network
+    depends_on:
+      - mariadb
+    restart: always
+  mariadb:
+    build: ./requirements/mariadb
+    volumes:
+      - ./db:/var/lib/mysql
+    container_name: mariadb
+    networks:
+      - my_custom_network
+    restart: always
+networks:
+  my_custom_network:
